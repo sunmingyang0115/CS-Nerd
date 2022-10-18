@@ -1,11 +1,21 @@
 package com.CSNerd.csclub;
 
 public class Config {
+	
+	private String pwd;
 	private String token;
 	private String serverID;
 	private String prefix;
 	
 	public Config() {}
+	
+	public String getPwd() {
+		return pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
 
 	public String getToken() {
 		return token;
@@ -32,7 +42,18 @@ public class Config {
 	}
 
 	public boolean isValid() {
-		// TODO Auto-generated method stub
+		if(pwd.isBlank())
+			return false;
+		
+		if(token.isBlank())
+			return false;
+
+		if(serverID.isBlank())
+			return false;
+
+		if(prefix.isBlank())
+			return false;
+		
 		return true;
 	}
 	
