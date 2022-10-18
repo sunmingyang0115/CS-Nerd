@@ -14,6 +14,9 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class CSNerd {
@@ -27,9 +30,9 @@ public class CSNerd {
 	public CSNerd() throws LoginException, InterruptedException, URISyntaxException {
 		Console con = System.console(); 
 		
-//		if(con == null) {
-//			System.exit(0);
-//		}
+		if(con == null) {
+			System.exit(0);
+		}
 		
 		out("CS NERD DISCORD BOT");
 		parent = new File(ClassLoader.getSystemClassLoader().getResource(".").toURI()).getPath();
@@ -42,16 +45,41 @@ public class CSNerd {
 		
 		out("Auth:");
 		char[]pwd = con.readPassword();
-		if(pwd != config.getPwd()) {
-			out("- Bad Auth");
-			System.exit(0);
+		char[]rpwd = config.getPwd().toCharArray();
+		for(int i = 0; i < pwd.length; i++) {
+			if(pwd[i] != rpwd[i]) {
+				out("- Bad Auth");
+				System.exit(0);
+			}
 		}
 		
-		out("Building");
+		out("Authorized");
+		
+		out("Building...");
 		jda = JDABuilder.createDefault(config.getToken(), intent).build();
 		jda.awaitReady();
 		out("Done building");
 		
+		System.out.println("Setting status message...");
+		jda.getPresence().setActivity(Activity.playing("at CS Club!"));
+		System.out.println("Setting status...");
+		jda.getPresence().setStatus(OnlineStatus.IDLE);
+
+		System.out.println("Checking server ID...");
+		boolean found = false;
+		for (Guild guild : jda.getGuilds()) {
+			if(guild.getId().equals(config.getServerID())) {
+				found = true;
+			}
+		}
+		if(!found) {
+			out("- Invalid server ID");
+			System.exit(0);
+		}
+		
+		System.out.println("Adding listeners...");
+		//jda.addEventListener(new Commands());
+		System.out.println("Done!");
 		
 	}
 
