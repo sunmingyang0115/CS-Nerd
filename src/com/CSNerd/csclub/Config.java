@@ -30,5 +30,10 @@ public class Config {
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
 	}
+
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 	
 }
