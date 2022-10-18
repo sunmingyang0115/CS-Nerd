@@ -1,5 +1,6 @@
 package com.CSNerd.csclub;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -24,15 +25,38 @@ public class CSNerd {
 	private static final EnumSet<GatewayIntent> intent = EnumSet.of(GatewayIntent.GUILD_MESSAGES);
 	
 	public CSNerd() throws LoginException, InterruptedException, URISyntaxException {
+		Console con = System.console(); 
+		
+//		if(con == null) {
+//			System.exit(0);
+//		}
+		
+		out("CS NERD DISCORD BOT");
 		parent = new File(ClassLoader.getSystemClassLoader().getResource(".").toURI()).getPath();
 		
+		out("Reading config.yml");
 		if(!readConfigYML()) {
-			System.out.println("Bad Config");
+			System.out.println("- Bad Config");
 			System.exit(0);
 		}
 		
+		out("Auth:");
+		char[]pwd = con.readPassword();
+		if(pwd != config.getPwd()) {
+			out("- Bad Auth");
+			System.exit(0);
+		}
+		
+		out("Building");
 		jda = JDABuilder.createDefault(config.getToken(), intent).build();
 		jda.awaitReady();
+		out("Done building");
+		
+		
+	}
+
+	private void out(String string) {
+		System.out.println(string);
 	}
 
 	private static boolean readConfigYML() {
