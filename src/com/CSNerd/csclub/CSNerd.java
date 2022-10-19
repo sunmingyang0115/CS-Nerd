@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.EnumSet;
+import java.util.HashMap;
 
 import javax.security.auth.login.LoginException;
 
@@ -24,6 +25,8 @@ public class CSNerd {
 	static Config config;
 	static JDA jda;
 	static String parent;
+	
+	static HashMap<String, Command>cmdMap = new HashMap<String, Command>();
 
 	private static final EnumSet<GatewayIntent> intent = EnumSet.of(GatewayIntent.GUILD_MESSAGES);
 	
@@ -31,7 +34,7 @@ public class CSNerd {
 		Console con = System.console(); 
 		
 		if(con == null) {
-			System.exit(0);
+			//System.exit(0);
 		}
 		
 		out("CS NERD DISCORD BOT");
@@ -39,7 +42,7 @@ public class CSNerd {
 		
 		out("Reading config.yml");
 		if(!readConfigYML()) {
-			System.out.println("- Bad Config");
+			out("- Bad Config");
 			System.exit(0);
 		}
 		
@@ -60,12 +63,12 @@ public class CSNerd {
 		jda.awaitReady();
 		out("Done building");
 		
-		System.out.println("Setting status message...");
+		out("Setting status message...");
 		jda.getPresence().setActivity(Activity.playing("at CS Club!"));
-		System.out.println("Setting status...");
+		out("Setting status...");
 		jda.getPresence().setStatus(OnlineStatus.IDLE);
 
-		System.out.println("Checking server ID...");
+		out("Checking server ID...");
 		boolean found = false;
 		for (Guild guild : jda.getGuilds()) {
 			if(guild.getId().equals(config.getServerID())) {
@@ -77,9 +80,12 @@ public class CSNerd {
 			System.exit(0);
 		}
 		
-		System.out.println("Adding listeners...");
-		//jda.addEventListener(new Commands());
-		System.out.println("Done!");
+		out("Mapping commands");
+		cmdMap.put("ping", new PingPong());
+		
+		out("Adding listeners...");
+		jda.addEventListener(new Commands());
+		out("Done!");
 		
 	}
 
