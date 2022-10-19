@@ -5,3 +5,7 @@ token: abcd
 serverID: 1234567890
 
 prefix: cs
+
+memberID: 1234567890
+
+execID: 1234567890

@@ -19,33 +19,35 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class CSNerd {
 
 	static Config config;
 	static JDA jda;
 	static String parent;
-	
+
 	static HashMap<String, Command>cmdMap = new HashMap<String, Command>();
 
-	private static final EnumSet<GatewayIntent> intent = EnumSet.of(GatewayIntent.GUILD_MESSAGES);
-	
+	private static final EnumSet<GatewayIntent> intent = EnumSet.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS);
+
 	public CSNerd() throws LoginException, InterruptedException, URISyntaxException {
 		Console con = System.console(); 
-		
+
 		if(con == null) {
 			//System.exit(0);
 		}
-		
+
 		out("CS NERD DISCORD BOT");
 		parent = new File(ClassLoader.getSystemClassLoader().getResource(".").toURI()).getPath();
-		
+
 		out("Reading config.yml");
 		if(!readConfigYML()) {
 			out("- Bad Config");
 			System.exit(0);
 		}
-		
+
 		out("Auth:");
 		char[]pwd = con.readPassword();
 		char[]rpwd = config.getPwd().toCharArray();
@@ -55,14 +57,17 @@ public class CSNerd {
 				System.exit(0);
 			}
 		}
-		
+
 		out("Authorized");
-		
+
 		out("Building...");
-		jda = JDABuilder.createDefault(config.getToken(), intent).build();
+		jda = JDABuilder.createDefault(config.getToken(), intent)
+				.setChunkingFilter(ChunkingFilter.ALL)
+				.setMemberCachePolicy(MemberCachePolicy.ALL)
+				.build();
 		jda.awaitReady();
 		out("Done building");
-		
+
 		out("Setting status message...");
 		jda.getPresence().setActivity(Activity.playing("at CS Club!"));
 		out("Setting status...");
@@ -79,14 +84,15 @@ public class CSNerd {
 			out("- Invalid server ID");
 			System.exit(0);
 		}
-		
+
 		out("Mapping commands");
 		cmdMap.put("ping", new PingPong());
-		
+		cmdMap.put("erole", new EveryoneRole());
+
 		out("Adding listeners...");
-		jda.addEventListener(new Commands());
+		jda.addEventListener(new Events());
 		out("Done!");
-		
+
 	}
 
 	private void out(String string) {
@@ -108,5 +114,5 @@ public class CSNerd {
 			return false;
 		}
 	}
-	
+
 }

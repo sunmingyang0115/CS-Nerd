@@ -6,6 +6,8 @@ public class Config {
 	private String token;
 	private String serverID;
 	private String prefix;
+	private String memberID;
+	private String execID;
 	
 	public Config() {}
 	
@@ -41,6 +43,14 @@ public class Config {
 		this.prefix = prefix;
 	}
 
+	public String getMemberID() {
+		return memberID;
+	}
+
+	public void setMemberID(String memberID) {
+		this.memberID = memberID;
+	}
+
 	public boolean isValid() {
 		if(pwd.isBlank())
 			return false;
@@ -55,6 +65,14 @@ public class Config {
 			return false;
 		
 		return true;
+	}
+
+	public String getExecID() {
+		return execID;
+	}
+
+	public void setExecID(String execID) {
+		this.execID = execID;
 	}
 	
 }
