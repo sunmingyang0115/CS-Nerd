@@ -14,7 +14,7 @@ public class PingPong implements Command {
 	public void callCommand(String p, Message m) {
 		m.reply("Ping: ...", m -> {
 			long ping = m.getTimeCreated().until(m.getTimeCreated(), ChronoUnit.MILLIS);
-			m.editMessage("Pong! \uD83C\uDFD3 " + ping  + "ms | Websocket: " + event.getJDA().getGatewayPing() + "ms").queue();
+			m.editMessage("Pong! \uD83C\uDFD3 " + ping  + "ms").queue();
 		});
 	}
 
